@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.shalatku.ui.theme.ShalatkuTheme
 
@@ -37,7 +38,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ShalatkuApp(viewModel: SalatKuViewModel = viewModel()) {
-    // State khusus UI (tab yang dipilih) tetap di composable, tapi tahan rotasi
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // UI-only state (selected tab) stays in the composable
     var selected by rememberSaveable { mutableIntStateOf(0) }
 
     Scaffold(
@@ -66,18 +69,24 @@ fun ShalatkuApp(viewModel: SalatKuViewModel = viewModel()) {
     ) { innerPadding ->
         val contentModifier = Modifier.padding(innerPadding)
         when (selected) {
-            0 -> HomeScreen(samplePrayers, contentModifier)
+            0 -> HomeScreen(
+                prayers = uiState.prayers,
+                prayerTimes = uiState.prayerTimes,
+                onRefreshPrayerTimes = viewModel::loadPrayerTimes,
+                modifier = contentModifier
+            )
             1 -> TrackerScreen(
-                prayers = samplePrayers,
-                donePrayers = viewModel.donePrayers,
+                prayers = uiState.prayers,
+                donePrayers = uiState.donePrayers,
+                doneCount = uiState.doneCount,
                 onToggle = viewModel::togglePrayer,
                 onClear = viewModel::clearPrayers,
                 modifier = contentModifier
             )
             2 -> TasbihScreen(
-                count = viewModel.tasbihCount,
-                rounds = viewModel.completedRounds,
-                roundSize = viewModel.roundSize,
+                count = uiState.tasbihCount,
+                rounds = uiState.completedRounds,
+                roundSize = uiState.roundSize,
                 onIncrement = viewModel::incrementTasbih,
                 onReset = viewModel::resetTasbih,
                 onSelectRoundSize = viewModel::setRoundSize,

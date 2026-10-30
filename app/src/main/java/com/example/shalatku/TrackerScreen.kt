@@ -14,12 +14,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun TrackerScreen(
     prayers: List<Prayer>,
     donePrayers: List<String>,
+    doneCount: Int,
     onToggle: (String) -> Unit,
     onClear: () -> Unit,
     modifier: Modifier = Modifier
@@ -27,7 +29,7 @@ fun TrackerScreen(
     Column(modifier.verticalScroll(rememberScrollState()).padding(16.dp)) {
         Text("Prayer Tracker", style = MaterialTheme.typography.headlineMedium)
         Text(
-            "${donePrayers.size} of ${prayers.size} prayers done today",
+            "$doneCount of ${prayers.size} prayers done today",
             style = MaterialTheme.typography.bodyLarge
         )
         Spacer(Modifier.height(16.dp))
@@ -43,4 +45,16 @@ fun TrackerScreen(
         Spacer(Modifier.height(16.dp))
         Button(onClick = onClear) { Text("Clear all") }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TrackerScreenPreview() {
+    TrackerScreen(
+        prayers = samplePrayers,
+        donePrayers = listOf("Subuh", "Dzuhur"),
+        doneCount = 2,
+        onToggle = {},
+        onClear = {}
+    )
 }

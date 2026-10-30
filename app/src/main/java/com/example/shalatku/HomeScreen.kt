@@ -14,11 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun HomeScreen(prayers: List<Prayer>, modifier: Modifier = Modifier) {
-    Column(modifier.padding(16.dp)) {
-        Text("Shalatku", style = MaterialTheme.typography.headlineMedium)
+    Column(modifier.verticalScroll(rememberScrollState()).padding(16.dp)) {        Text("Shalatku", style = MaterialTheme.typography.headlineMedium)
         Text("Today's prayer times", style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.height(16.dp))
         prayers.forEach { prayer -> PrayerCard(prayer) }
